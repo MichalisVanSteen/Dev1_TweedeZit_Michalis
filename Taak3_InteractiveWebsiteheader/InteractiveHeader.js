@@ -89,14 +89,20 @@ function update() {
     drawSea();
     drawBeach();
     drawLightHouse();
+
     currentWaves.forEach(element => {
-        if (element.xPos < context.canvas.width / 4 + 100) {
-            element.xPos = Math.floor(Math.random() * 400) + context.canvas.width / 4 + 300;
-            element.yPos = Math.floor(Math.random() * context.canvas.height);
+        if (element.xPos < context.canvas.width / 4 + 150) {
+            element.waveColor = element.waveColor - 0.0125;
+            console.log(element.waveColor);
+            if (element.xPos < context.canvas.width / 4 + 100) {
+                element.xPos = Math.floor(Math.random() * 400) + context.canvas.width / 4 + 300;
+                element.yPos = Math.floor(Math.random() * context.canvas.height);
+            }
+        } else if (element.waveColor < 1 && element.xPos > context.canvas.width / 4 + 150) {
+            element.waveColor += 0.0125;
         }
         element.xPos--;
-        drawWaveArc(element.xPos, element.yPos);
-
+        drawWaveArc(element.xPos, element.yPos, element.waveColor);
     });
 
 }
@@ -109,25 +115,25 @@ function fillArray() {
         let y = Math.floor(Math.random() * context.canvas.height);
         let wave = {
             xPos: x,
-            yPos: y
+            yPos: y,
+            waveColor: 1
         };
         currentWaves.push(wave);
 
 
     }
-    console.log(currentWaves);
+    //console.log(currentWaves);
 }
 
 fillArray();
 
 
-function drawWaveArc(x, y) {
-    context.strokeStyle = "white";
+function drawWaveArc(x, y, color) {
+    context.strokeStyle = 'rgba(255,255,255,' + color + ')';
     context.beginPath();
     context.arc(x, y, 50, Math.PI * 1.2, Math.PI / 1.5, true);
     context.stroke();
 }
-
 
 
 update();
