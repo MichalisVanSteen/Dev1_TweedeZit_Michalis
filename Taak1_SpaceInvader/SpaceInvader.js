@@ -10,7 +10,7 @@ function drawSpaceInvader() {
     context.fill();
     context.stroke();
 
-    context.fillStyle = "green";
+    context.fillStyle = "#00FF00";
     //Groot balk bovenstuk
     context.rect(75, 125, 250, 50);
     //Kleine kubus links boven
