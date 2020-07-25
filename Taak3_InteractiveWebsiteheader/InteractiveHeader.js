@@ -5,16 +5,15 @@ import * as Utils from "./context/utils.js";
 //window.onmousemove = move;
 //window.onclick = click;
 
-//variables
+//Global variables
 context.canvas.height = 400;
+let currentWaves = [];
 
 function drawSea() {
     context.fillStyle = "darkblue";
     context.fillRect(context.canvas.width / 4, 0, context.canvas.width, context.canvas.height);
 
 }
-
-drawSea();
 
 function drawBeach() {
 
@@ -41,8 +40,6 @@ function drawBeach() {
     context.fill();
 
 }
-
-drawBeach();
 
 function drawLightHouse() {
 
@@ -87,8 +84,50 @@ function drawLightHouse() {
     context.fill();
 }
 
-drawLightHouse();
+function update() {
+    requestAnimationFrame(update);
+    drawSea();
+    drawBeach();
+    drawLightHouse();
+    currentWaves.forEach(element => {
+        if (element.xPos < context.canvas.width / 4 + 100) {
+            element.xPos = Math.floor(Math.random() * 400) + context.canvas.width / 4 + 300;
+            element.yPos = Math.floor(Math.random() * context.canvas.height);
+        }
+        element.xPos--;
+        drawWaveArc(element.xPos, element.yPos);
 
-function drawWaves() {
+    });
 
 }
+
+function fillArray() {
+    let amountWaves = 6;
+
+    for (let i = 0; i < amountWaves; i++) {
+        let x = Math.floor(Math.random() * 400) + context.canvas.width / 4 + 150;
+        let y = Math.floor(Math.random() * context.canvas.height);
+        let wave = {
+            xPos: x,
+            yPos: y
+        };
+        currentWaves.push(wave);
+
+
+    }
+    console.log(currentWaves);
+}
+
+fillArray();
+
+
+function drawWaveArc(x, y) {
+    context.strokeStyle = "white";
+    context.beginPath();
+    context.arc(x, y, 50, Math.PI * 1.2, Math.PI / 1.5, true);
+    context.stroke();
+}
+
+
+
+update();
