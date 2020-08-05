@@ -2,8 +2,20 @@
 import context from "./context/context.js";
 import * as Utils from "./context/utils.js";
 
-//window.onmousemove = move;
-//window.onclick = click;
+window.onmousemove = move;
+
+let mousePosX = 0;
+let mousePosY = 0;
+
+function move(eventData) {
+    let e = eventData;
+    let x = e.pageX;
+    let y = e.pageY;
+    mousePosX = x;
+    mousePosY = y;
+
+
+}
 
 //Global variables
 context.canvas.height = 400;
@@ -95,7 +107,6 @@ function update() {
     currentWaves.forEach(element => {
         if (element.xPos < context.canvas.width / 4 + 150) {
             element.waveColor = element.waveColor - 0.0125;
-            //console.log(element.waveColor);
             if (element.xPos < context.canvas.width / 4 + 100) {
                 element.xPos = Math.floor(Math.random() * 400) + context.canvas.width / 4 + 300;
                 element.yPos = Math.floor(Math.random() * context.canvas.height);
@@ -123,8 +134,16 @@ function update() {
                 }
             }
         }
-        drawBoat(element.xPos, element.yPos);
+        //console.log(element.yPos + 50, mousePosY); || element.yPos > mousePosY || element.yPos < mousePosY + 10
+        if (element.yPos + 75 > mousePosY && element.yPos + 50 < mousePosY + 100) {
+            if (element.xPos < mousePosX) {
+                drawBoat(element.xPos, element.yPos, element.r, element.g, element.b);
+            }
+        }
     });
+
+    drawLight();
+
 
 }
 
@@ -150,12 +169,13 @@ function fillArray() {
         let boat = {
             xPos: x,
             yPos: y,
-            boatColor: Math.floor(Math.random() * 255)
+            r: Math.floor(Math.random() * 255),
+            g: Math.floor(Math.random() * 255),
+            b: Math.floor(Math.random() * 255)
         };
         currentBoats.push(boat);
+        console.log(boat.r, boat.g, boat.b);
     }
-
-    console.log(currentBoats);
 }
 
 fillArray();
@@ -163,13 +183,14 @@ fillArray();
 
 function drawWaveArc(x, y, color) {
     context.strokeStyle = 'rgba(255,255,255,' + color + ')';
+    context.lineWidth = 3;
     context.beginPath();
     context.arc(x, y, 50, Math.PI * 1.2, Math.PI / 1.5, true);
     context.stroke();
 }
 
-function drawBoat(x, y) {
-    context.fillStyle = "brown";
+function drawBoat(x, y, r, g, b) {
+    context.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
     context.beginPath();
     context.fillRect(x, y, 50, 100);
 
@@ -188,7 +209,18 @@ function drawBoat(x, y) {
 
 }
 
+function drawLight() {
+    context.lineWidth = 35;
+    context.strokeStyle = "rgba(255, 255, 0, 0.75)";
+    context.beginPath();
+    context.moveTo(context.canvas.width / 8 - 25, context.canvas.height / 4 + 100);
+    context.lineTo(mousePosX, mousePosY);
+    context.stroke();
 
-
+    context.fillStyle = "rgba(255, 255, 0)";
+    context.beginPath();
+    context.arc(mousePosX, mousePosY, 17.5, 0, 2 * Math.PI);
+    context.fill();
+}
 
 update();
